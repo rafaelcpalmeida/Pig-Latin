@@ -105,20 +105,30 @@ class APIController extends Controller {
 				$arrAux[0] = strtolower($arrAux[0]);
 			}
 			
-			$regexp = ($arrAux[$i] === 'y' || $arrAux[$i] === 'Y') ? "/^[AaEeIiOoUu]/" : "/^[AaEeIiOoUuYy]/";
+			$regexp = (strtolower($arrAux[$i]) === 'y') ? "/^[AaEeIiOoUu]/" : "/^[AaEeIiOoUuYy]/";
 			
 			while(preg_match($regexp, $arrAux[$i]) === 0) {
-				$let = $arrAux[$i];
-				unset($arrAux[$i]);
-				array_push($arrAux, $let); 
+				$arrAux = $this->swapLetter($arrAux, $i);
 				$i++;
+				if(strtolower($arrAux[$i]) === 'u' && strtolower(end($arrAux)) === 'q') {
+					$arrAux = $this->swapLetter($arrAux, $i);
+					$i++;
+				}
 			}
 			
 			if($up)
-				$arrAux[1] = strtoupper($arrAux[1]);
+				$arrAux[array_keys($arrAux)[0]] = strtoupper($arrAux[array_keys($arrAux)[0]]);
 			
 			return implode("",$arrAux)."ay";
 		}
+	}
+	
+	private function swapLetter($arrAux, $i) {
+		$let = $arrAux[$i];
+		unset($arrAux[$i]);
+		array_push($arrAux, $let);
+		
+		return $arrAux;
 	}
 
     private function encodeMessage($status, $message) {
