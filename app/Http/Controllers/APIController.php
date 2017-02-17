@@ -55,8 +55,63 @@ class APIController extends Controller {
     }
 
     public function storePost(Request $request) {
+        $string = $request->string;
 
+		if(preg_match("/^[A-z\s]+$/", $string) === 1) {
+			if(preg_match("/-/", $string) === 1) {
+				$words = explode("-", $string);
+				$string = "";
+				
+				foreach ($words as $word) {
+					$string .= $this->translateWord($word).'-';
+				}
+				
+				$string = substr($string, 0, -1);
+			} elseif (preg_match("/\s/", $string) === 1) {
+				$words = explode(" ", $string);
+				$string = "";
+				
+				foreach ($words as $word) {
+					$string .= $this->translateWord($word).' ';
+				}
+				
+				$string = substr($string, 0, -1);
+			} else {
+				$string = $this->translateWord($string);
+			}
+		}
+		
+		return $this->encodeMessage(0, array("translation" => $string));
     }
+	
+	private function translateWord($word) {
+		if(preg_match("/^[AaEeIiOoUu]/", $word) === 1) {
+			return $word .= "way";
+		} else {
+			$arrAux = str_split($word);
+			$i = 0;
+			$up = false;
+			
+			if(ctype_upper($arrAux[0])) {
+				$up = true;
+				$arrAux[0] = strtolower($arrAux[0]);
+			}
+			
+			$regexp = ($arrAux[$i] === 'y' || $arrAux[$i] === 'Y') ? "/^[AaEeIiOoUu]/" : "/^[AaEeIiOoUuYy]/";
+			
+			while(preg_match($regexp, $arrAux[$i]) === 0) {
+				$let = $arrAux[$i];
+				unset($arrAux[$i]);
+				array_push($arrAux, $let); 
+				$i++;
+			}
+			
+			if($up)
+				$arrAux[1] = strtoupper($arrAux[1]);
+			
+			return implode("",$arrAux)."ay";
+		}
+	}
 
     private function encodeMessage($status, $message) {
         return json_encode(["status" => ($status == 0) ? "Ok" : "Error", "message" => $message]);
