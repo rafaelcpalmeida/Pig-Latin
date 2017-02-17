@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -59,29 +60,36 @@ class APIController extends Controller {
 
 		if(preg_match("/^[A-z\s]+$/", $string) === 1) {
 			if(preg_match("/-/", $string) === 1) {
-				$words = explode("-", $string);
-				$string = "";
-				
-				foreach ($words as $word) {
-					$string .= $this->translateWord($word).'-';
-				}
-				
-				$string = substr($string, 0, -1);
+				$string = $this->treatWords($string, '-');
 			} elseif (preg_match("/\s/", $string) === 1) {
-				$words = explode(" ", $string);
-				$string = "";
-				
-				foreach ($words as $word) {
-					$string .= $this->translateWord($word).' ';
-				}
-				
-				$string = substr($string, 0, -1);
+				$string = $this->treatWords($string, ' ');
 			} else {
 				$string = $this->translateWord($string);
 			}
 		}
+
+        if (!Post::where('original', '=', $request->string)->exists()) {
+            $post = new Post();
+
+            $post->user_id = $request->user()->id;
+            $post->original = $request->string;
+            $post->translation = $string;
+
+            $post->save();
+        }
 		
 		return $this->encodeMessage(0, array("translation" => $string));
+    }
+
+    private function treatWords($string, $delimiter) {
+        $words = explode($delimiter, $string);
+        $stringAux = "";
+        
+        foreach ($words as $word) {
+            $stringAux .= $this->translateWord($word).$delimiter;
+        }
+
+        return substr($stringAux, 0, -1);
     }
 	
 	private function translateWord($word) {
