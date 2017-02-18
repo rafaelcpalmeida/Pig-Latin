@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+  <file name="Authenticate.php">
+    <totals>
+      <lines total="44" comments="19" code="25" executable="5" executed="4" percent="80.00%"/>
+      <methods count="2" tested="1" percent="50.00%"/>
+      <functions count="0" tested="0" percent=""/>
+      <classes count="1" tested="0" percent="0.00%"/>
+      <traits count="0" tested="0" percent=""/>
+    </totals>
+    <class name="Authenticate" start="8" executable="5" executed="4" crap="3.07">
+      <package full="" name="" sub="" category=""/>
+      <namespace name="App\Http\Middleware"/>
+      <method name="__construct" signature="__construct(Auth $auth)" start="23" end="26" crap="1" executable="2" executed="2" coverage="100"/>
+      <method name="handle" signature="handle($request, Closure $next, $guard = null)" start="36" end="43" crap="2.15" executable="3" executed="2" coverage="66.666666666667"/>
+    </class>
+    <coverage>
+      <line nr="25">
+        <covered by="Test::testExample"/>
+      </line>
+      <line nr="26">
+        <covered by="Test::testExample"/>
+      </line>
+      <line nr="38">
+        <covered by="Test::testExample"/>
+      </line>
+      <line nr="42">
+        <covered by="Test::testExample"/>
+      </line>
+    </coverage>
+  </file>
+</phpunit>

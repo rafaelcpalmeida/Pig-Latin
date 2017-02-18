@@ -50,9 +50,9 @@ class APIController extends Controller {
             $user->save();
 
             return $this->encodeMessage(0, "User activated. Please use the following token to access methods: $user->api_token");
-        } else {
-            return $this->encodeMessage(1, "Couldn't find user.");
         }
+        
+        return $this->encodeMessage(1, "Couldn't find user.");
     }
 
     public function storePost(Request $request) {
