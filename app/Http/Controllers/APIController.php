@@ -23,19 +23,19 @@ class APIController extends Controller {
     public function register(Request $request) {
         if (User::where('email', '=', $request->email)->exists()) {
             return $this->encodeMessage(1, "User already registered.");
-        } else {
-            $user = new User;
-
-            $user->username = $request->username;
-            $user->password = Hash::make($request->password);
-            $user->email = $request->email;
-            $user->confirmation_token = str_random(32);;
-            $user->confirmed = false;
-
-            $user->save();
-        
-            return $this->encodeMessage(0, "User registered. Please confirm registration with URL: ".url()."/confirm/".$user->confirmation_token);
         }
+        
+        $user = new User;
+
+        $user->username = $request->username;
+        $user->password = Hash::make($request->password);
+        $user->email = $request->email;
+        $user->confirmation_token = str_random(32);;
+        $user->confirmed = false;
+
+        $user->save();
+    
+        return $this->encodeMessage(0, "User registered. Please confirm registration with URL: ".url()."/confirm/".$user->confirmation_token);
     }
 
     public function confirm(Request $request, $token) {
@@ -85,10 +85,10 @@ class APIController extends Controller {
         $post = Post::where('id', '=', $id);
 
         if($post->exists()) {
-            return $this->encodeMessage(0, $post->first()->translation);
+            return $this->encodeMessage(0, ['translation' => $post->first()->translation]);
         }
         
-        return $this->encodeMessage(1, "Couldn't find the requested translation");
+        return $this->encodeMessage(1, 'Couldn\'t find the requested translation');
     }
 
     private function treatWords($string, $delimiter) {
