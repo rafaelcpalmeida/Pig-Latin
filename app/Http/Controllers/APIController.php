@@ -81,6 +81,16 @@ class APIController extends Controller {
 		return $this->encodeMessage(0, array("translation" => $string));
     }
 
+    public function getPost(Request $request, $id) {
+        $post = Post::where('id', '=', $id);
+
+        if($post->exists()) {
+            return $this->encodeMessage(0, $post->first()->translation);
+        }
+        
+        return $this->encodeMessage(1, "Couldn't find the requested translation");
+    }
+
     private function treatWords($string, $delimiter) {
         $words = explode($delimiter, $string);
         $stringAux = "";
