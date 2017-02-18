@@ -24,7 +24,7 @@ class APIController extends Controller {
         if (User::where('email', '=', $request->email)->exists()) {
             return $this->encodeMessage(1, "User already registered.");
         }
-        
+
         $user = new User;
 
         $user->username = $request->username;
@@ -38,7 +38,7 @@ class APIController extends Controller {
         return $this->encodeMessage(0, "User registered. Please confirm registration with URL: ".url()."/confirm/".$user->confirmation_token);
     }
 
-    public function confirm(Request $request, $token) {
+    public function confirm($token) {
         $user = User::where('confirmation_token', '=', $token);
         
         if ($user->exists()) {
@@ -81,7 +81,7 @@ class APIController extends Controller {
 		return $this->encodeMessage(0, array("translation" => $string));
     }
 
-    public function getPost(Request $request, $id) {
+    public function getPost($id) {
         $post = Post::where('id', '=', $id);
 
         if($post->exists()) {
